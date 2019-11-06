@@ -30,6 +30,7 @@ set nu
 set tabstop=4                       " vim interprets tabs \t as 4 spaces
 set shiftwidth=4                    " indents have width 4 spaces
 set softtabstop=4 expandtab     " expand tabs to 4 spaces
+set autoindent
  
 " File Tree Format on :E
 let g:netrw_liststyle=3
