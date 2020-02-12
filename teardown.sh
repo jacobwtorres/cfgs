@@ -12,5 +12,6 @@ mv ~/.vimrc.temp ~/.vimrc
 grep -v "PATH=\$PATH:" ./dot.bashrc > ./dot.bashrc.temp
 mv ./dot.bashrc.temp ./dot.bashrc
 
-#TODO if folder already exists we need to cache the old and restore upon teardown
-rm -rf ~/.config/dbxcli/
+rm -rf ~/.vim/pack/vendor/start/nerdtree
+rm -rf ~/.vim/pack/vendor/start/tagbar
+

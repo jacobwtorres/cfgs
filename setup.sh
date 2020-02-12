@@ -6,6 +6,11 @@ echo "so $PWD/dot.vimrc" >> ~/.vimrc
 
 echo "export PATH=\$PATH:${PWD}" >> dot.bashrc
 
+if ! [ -x "$(command -v git)" ]; then
+  echo 'Error: ' >&2
+  exit 1
+fi
+
 #git setup
 read -p "Set git config? (y/N): " git_setup
 if [[ $git_setup =~ [y,Y] ]]; then
@@ -23,10 +28,18 @@ fi
 
 if [[ ! -d ~/.vim/pack/vendor/start/tagbar ]]; then
     git clone https://github.com/majutsushi/tagbar.git ~/.vim/pack/vendor/start/tagbar
-    apt-get install exuberant-ctags #required by tagbar vim plugin
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        if ! [ -x "$(command -v brew)" ]; then
+            echo 'Error: brew is not installed. Install brew and then issue command: $ brew install ctags' >&2
+            exit 1
+        fi
+        brew install ctags
+    else
+        apt-get install exuberant-ctags #required by tagbar vim plugin
+    fi
+
 fi
 
 source $PWD/dot.bashrc
 
-#mkdir -p ~/.config/dbxcli/
-#openssl enc -d -aes-192-cbc -in db.0 > ~/.config/dbxcli/auth.json
