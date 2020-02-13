@@ -18,6 +18,7 @@ vgrep(){ find ${1-.} -type f \( -iname \*.jpg -o -iname \*.png \) -exec tesserac
 
 lsop(){ lsof -iTCP -sTCP:LISTEN -n -P ; }
 
+gl(){ git log --graph --oneline --decorate --color | less -SEXIER ; }
 
 cs_setup()
 {
