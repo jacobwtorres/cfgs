@@ -1,10 +1,6 @@
 #!/bin/bash
 
-echo "source $PWD/dot.bashrc" >> ~/.profile
-echo "source $PWD/dot.bashrc" >> ~/.bashrc
-echo "so $PWD/dot.vimrc" >> ~/.vimrc
-
-echo "export PATH=\$PATH:${PWD}" >> dot.bashrc
+read -p "Install and self-destruct? (y/N): " INCOGNITO
 
 if ! [ -x "$(command -v git)" ]; then
   echo 'Error: ' >&2
@@ -42,4 +38,23 @@ if [[ ! -d ~/.vim/pack/vendor/start/tagbar ]]; then
 fi
 
 source $PWD/dot.bashrc
+
+if [[ $INCOGNITO =~ [y,Y] ]]; then
+    mv $PWD/dot.bashrc ~/.dot.bashrc
+    mv $PWD/dot.vimrc ~/.dot.vimrc
+
+    echo "source ~/.dot.bashrc" >> ~/.profile
+    echo "source ~/.dot.bashrc" >> ~/.bashrc
+    echo "so ~/.dot.vimrc" >> ~/.vimrc
+
+    rm $PWD/README
+    rm -rf $PWD/.git
+    rm $PWD/setup.sh
+else
+    echo "source $PWD/dot.bashrc" >> ~/.profile
+    echo "source $PWD/dot.bashrc" >> ~/.bashrc
+    echo "so $PWD/dot.vimrc" >> ~/.vimrc
+
+    echo "export PATH=\$PATH:${PWD}" >> dot.bashrc
+fi
 

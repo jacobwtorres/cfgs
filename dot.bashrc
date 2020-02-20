@@ -1,24 +1,19 @@
 #!/bin/bash
 
+HISTFILE_CACHE=$HISTFILE
+
 dec(){ openssl enc -d -aes-192-cbc -in $1 ; }
-
 enc(){ openssl enc -aes-192-cbc -in $1 ; }
-
 comp(){ tar -cvzf $1.tar.gz $1 ; }
-
 decomp(){ tar -xvzf $1 ; }
-
 nn(){ printf "MISC\nDISPERSE\n- $(date) $1\n" | dbnn ; }
-
 todo(){ printf "MISC\nTODO\n- $(date) $1\n" | dbnn ; }
-
 mig(){ printf "MISC\nMIG\n- $(date) $1\n" | dbnn ; }
-
 vgrep(){ find ${1-.} -type f \( -iname \*.jpg -o -iname \*.png \) -exec tesseract {} stdout | grep ${2-"*"} $3 \; -exec echo {} \; ; }
-
 lsop(){ lsof -iTCP -sTCP:LISTEN -n -P ; }
-
 gl(){ git log --graph --oneline --decorate --color | less -SEXIER ; }
+logoff(){ HISTFILE_CACHE=$HISTFILE ; export HISTFILE=/dev/null ; }
+logon(){ export HISTFILE=$HISTFILE_CACHE ; }
 
 cs_setup()
 {
@@ -102,15 +97,50 @@ dbnn()
 
 }
 
+teardown()
+{
+    grep -v "dot.bashrc" ~/.profile > ~/.profile.temp
+    mv ~/.profile.temp ~/.profile
+
+    grep -v "dot.bashrc" ~/.bashrc > ~/.bashrc.temp
+    mv ~/.bashrc.temp ~/.bashrc
+
+    grep -v "dot.vimrc" ~/.vimrc > ~/.vimrc.temp
+    mv ~/.vimrc.temp ~/.vimrc
+
+    grep -v "PATH=\$PATH:" ./dot.bashrc > ./dot.bashrc.temp
+    mv ./dot.bashrc.temp ./dot.bashrc
+
+    rm -rf ~/.vim/pack/vendor/start/nerdtree
+    rm -rf ~/.vim/pack/vendor/start/tagbar
+}
+
 c_boiler_text="#include \"stdlib.h\"
 #include \"stdio.h\"
 #include \"string.h\"
 
-int main( void )
+int main( int argc, char **argv )
 {
     return 0;
 }"
 c_boiler(){ echo "$c_boiler_text" >> main.c ; }
 
-#sudo scp username@0.0.0.0:path/starting/at/home/to/file.txt ~/Downloads #sends file.txt from remote to local Downloads dir
+#logoff
 
+#docker runs bash, exposes current dir
+#history -s sudo docker run -it -v \$\(pwd\):\$\(pwd\) -w \$\(pwd\) ubuntu /bin/bash
+
+#docker runs bash, exposes current dir, auto deletes at end
+#history -s sudo docker run -it --rm -v \$\(pwd\):\$\(pwd\) -w \$\(pwd\) ubuntu /bin/bash
+
+#docker runs bash, exposes current dir, exposes USB
+#history -s sudo docker run -it --privileged -v /dev/bus/usb:/dev/bus/usb -v \$\(pwd\):\$\(pwd\) -w \$\(pwd\) ubuntu /bin/bash
+
+#logon
+
+export PS1="\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$ "
+export CLICOLOR=1
+export LSCOLORS=ExFxBxDxCxegedabagacad
+alias ls='ls -GFh'
+
+export PATH=$PATH:/Users/jacobtorres/repo/cfgs
